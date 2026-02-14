@@ -20,8 +20,8 @@ optdepends=(
 	'xclip: copy SSH key automatically (X11)'
 	'xsel: alternative clipboard tool (X11)'
 )
-provides=('${pkgname}')
-conflicts=('${pkgname}')
+provides=('aurm')
+conflicts=('aurm')
 pkgdesc="Professional AUR maintainer helper with automation and GitHub sync"
 url="https://github.com/elppans/${pkgname}"
 source=("git+${url}.git#branch=main")

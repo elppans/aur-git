@@ -262,7 +262,7 @@ copy_push() {
 ############################################
 
 build_pkg() {
-    makepkg -si --cleanbuild
+    makepkg -si --clean --cleanbuild
 }
 
 ############################################

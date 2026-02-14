@@ -1,4 +1,4 @@
-# aur-git
+# aurm
 
 Professional AUR maintainer helper for Arch Linux.
 
@@ -36,13 +36,13 @@ Helper profissional para maintainers do AUR no Arch Linux.
 ### From AUR
 
 ```bash
-yay -S aur-git
+yay -S aurm
 ````
 
 or
 
 ```bash
-paru -S aur-git
+paru -S aurm
 ```
 
 ---
@@ -50,8 +50,8 @@ paru -S aur-git
 ### Manual Installation
 
 ```bash
-git clone https://github.com/yourusername/aur-git.git
-cd aur-git
+git clone https://github.com/elppans/aurm.git
+cd aurm
 makepkg -si
 ```
 
@@ -62,7 +62,7 @@ makepkg -si
 ### Clone a package
 
 ```bash
-aur-git package-name
+aurm package-name
 ```
 
 ---
@@ -71,7 +71,7 @@ aur-git package-name
 
 ```bash
 cd package-name
-aur-git -u
+aurm -u
 ```
 
 This will:
@@ -88,7 +88,7 @@ This will:
 ### Force PGP import
 
 ```bash
-aur-git --force-pgp
+aurm --force-pgp
 ```
 
 ---
@@ -96,7 +96,7 @@ aur-git --force-pgp
 ### Sync GitHub → AUR
 
 ```bash
-aur-git -cp ~/projects/mypkg ~/aur/mypkg
+aurm -cp ~/projects/mypkg ~/aur/mypkg
 ```
 
 Automatically syncs files and performs update + push.
@@ -106,7 +106,7 @@ Automatically syncs files and performs update + push.
 ### Build locally
 
 ```bash
-aur-git build
+aurm build
 ```
 
 ---
@@ -114,7 +114,7 @@ aur-git build
 ### Setup SSH automatically
 
 ```bash
-aur-git setup
+aurm setup
 ```
 
 Creates SSH config and key if missing and copies public key to clipboard.
@@ -131,7 +131,7 @@ My Account → SSH Public Keys
 ### Remove package
 
 ```bash
-aur-git remove package-name
+aurm remove package-name
 ```
 
 Requires strong confirmation.
@@ -141,7 +141,7 @@ Requires strong confirmation.
 ### Help
 
 ```bash
-aur-git --help
+aurm --help
 ```
 
 ---
@@ -149,7 +149,7 @@ aur-git --help
 ### Version
 
 ```bash
-aur-git --version
+aurm --version
 ```
 
 ---
@@ -213,13 +213,13 @@ Copyright (c) 2026 Elppans
 ### Pelo AUR
 
 ```bash
-yay -S aur-git
+yay -S aurm
 ```
 
 ou
 
 ```bash
-paru -S aur-git
+paru -S aurm
 ```
 
 ---
@@ -227,8 +227,8 @@ paru -S aur-git
 ### Instalação Manual
 
 ```bash
-git clone https://github.com/yourusername/aur-git.git
-cd aur-git
+git clone https://github.com/yourusername/aurm.git
+cd aurm
 makepkg -si
 ```
 
@@ -239,7 +239,7 @@ makepkg -si
 ### Clonar pacote
 
 ```bash
-aur-git nome-do-pacote
+aurm nome-do-pacote
 ```
 
 ---
@@ -248,7 +248,7 @@ aur-git nome-do-pacote
 
 ```bash
 cd nome-do-pacote
-aur-git -u
+aurm -u
 ```
 
 Isso irá:
@@ -265,7 +265,7 @@ Isso irá:
 ### Forçar importação PGP
 
 ```bash
-aur-git --force-pgp
+aurm --force-pgp
 ```
 
 ---
@@ -273,7 +273,7 @@ aur-git --force-pgp
 ### Sincronizar GitHub → AUR
 
 ```bash
-aur-git -cp ~/projetos/meupkg ~/aur/meupkg
+aurm -cp ~/projetos/meupkg ~/aur/meupkg
 ```
 
 Sincroniza arquivos e executa update automático.
@@ -283,7 +283,7 @@ Sincroniza arquivos e executa update automático.
 ### Compilar localmente
 
 ```bash
-aur-git build
+aurm build
 ```
 
 ---
@@ -291,7 +291,7 @@ aur-git build
 ### Configurar SSH automaticamente
 
 ```bash
-aur-git setup
+aurm setup
 ```
 
 Cria configuração e chave SSH se necessário e copia a chave pública para o clipboard.
@@ -308,7 +308,7 @@ My Account → SSH Public Keys
 ### Remover pacote
 
 ```bash
-aur-git remove nome-do-pacote
+aurm remove nome-do-pacote
 ```
 
 Exige confirmação forte.
@@ -318,7 +318,7 @@ Exige confirmação forte.
 ### Ajuda
 
 ```bash
-aur-git --help
+aurm --help
 ```
 
 ---
@@ -326,7 +326,7 @@ aur-git --help
 ### Versão
 
 ```bash
-aur-git --version
+aurm --version
 ```
 
 ---

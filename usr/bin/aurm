@@ -196,7 +196,6 @@ ensure_master_branch() {
 
 	# Se branch atual for main, converter para master
 	current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
-	export current_branch
 
 	if [[ "$current_branch" == "main" ]]; then
 		msg no_master
@@ -214,9 +213,12 @@ ensure_master_branch() {
 		if git ls-remote --exit-code --heads origin master >/dev/null 2>&1; then
 			git branch --set-upstream-to=origin/master master >/dev/null 2>&1
 		fi
+		current_branch="master"
 	else
 		git branch --set-upstream-to=origin/"$current_branch" "$current_branch" >/dev/null 2>&1
 	fi
+
+	export current_branch
 }
 
 ############################################

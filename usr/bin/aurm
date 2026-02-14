@@ -18,9 +18,9 @@ set -e
 LANG_SYS="${LANG:-en_US}"
 
 if [[ "$LANG_SYS" == pt* ]]; then
-    LANGUAGE="pt"
+	LANGUAGE="pt"
 else
-    LANGUAGE="en"
+	LANGUAGE="en"
 fi
 
 ############################################
@@ -37,61 +37,64 @@ RESET="\e[0m"
 ############################################
 
 t() {
-    case "$1" in
-        checking_connection)
-            [ "$LANGUAGE" = "pt" ] && echo "Verificando conexão com AUR..." || echo "Checking AUR connection..."
-            ;;
-        no_connection)
-            [ "$LANGUAGE" = "pt" ] && echo "Sem conexão ou autenticação com AUR." || echo "No connection or authentication with AUR."
-            ;;
-        creating_gitignore)
-            [ "$LANGUAGE" = "pt" ] && echo "Criando .gitignore padrão..." || echo "Creating default .gitignore..."
-            ;;
-        repo_ready)
-            [ "$LANGUAGE" = "pt" ] && echo "Repositório pronto." || echo "Repository ready."
-            ;;
-        no_master)
-            [ "$LANGUAGE" = "pt" ] && echo "Repositório está em 'main'. Convertendo para 'master'..." || echo "The repository is in 'main'. Converting it to 'master'..."
-            ;;
-        updating_checksums)
-            [ "$LANGUAGE" = "pt" ] && echo "Atualizando checksums..." || echo "Updating checksums..."
-            ;;
-        generating_srcinfo)
-            [ "$LANGUAGE" = "pt" ] && echo "Gerando .SRCINFO..." || echo "Generating .SRCINFO..."
-            ;;
-        running_namcap)
-            [ "$LANGUAGE" = "pt" ] && echo "Rodando namcap..." || echo "Running namcap..."
-            ;;
-        update_done)
-            [ "$LANGUAGE" = "pt" ] && echo "Update concluído." || echo "Update completed."
-            ;;
-        sync_files)
-            [ "$LANGUAGE" = "pt" ] && echo "Sincronizando arquivos..." || echo "Syncing files..."
-            ;;
-        copy_done)
-            [ "$LANGUAGE" = "pt" ] && echo "Copy + Push concluído." || echo "Copy + Push completed."
-            ;;
-        removing_warn1)
-            [ "$LANGUAGE" = "pt" ] && echo "Você está prestes a REMOVER o pacote:" || echo "You are about to REMOVE the package:"
-            ;;
-        removing_warn2)
-            [ "$LANGUAGE" = "pt" ] && echo "Esta ação é irreversível." || echo "This action is irreversible."
-            ;;
-        confirm_again)
-            [ "$LANGUAGE" = "pt" ] && echo "Digite o nome do pacote novamente para confirmar:" || echo "Type the package name again to confirm:"
-            ;;
-        cancelled)
-            [ "$LANGUAGE" = "pt" ] && echo "Operação cancelada." || echo "Operation cancelled."
-            ;;
-        remove_done)
-            [ "$LANGUAGE" = "pt" ] && echo "Se não houve erro, o pacote foi removido." || echo "If no errors occurred, the package was removed."
-            ;;
-    esac
+	case "$1" in
+	checking_connection)
+		[ "$LANGUAGE" = "pt" ] && echo "Verificando conexão com AUR..." || echo "Checking AUR connection..."
+		;;
+	no_connection)
+		[ "$LANGUAGE" = "pt" ] && echo "Sem conexão ou autenticação com AUR." || echo "No connection or authentication with AUR."
+		;;
+	creating_gitignore)
+		[ "$LANGUAGE" = "pt" ] && echo "Criando .gitignore padrão..." || echo "Creating default .gitignore..."
+		;;
+	repo_ready)
+		[ "$LANGUAGE" = "pt" ] && echo "Repositório pronto." || echo "Repository ready."
+		;;
+	no_master)
+		[ "$LANGUAGE" = "pt" ] && echo "Repositório está em 'main'. Convertendo para 'master'..." || echo "The repository is in 'main'. Converting it to 'master'..."
+		;;
+	updating_checksums)
+		[ "$LANGUAGE" = "pt" ] && echo "Atualizando checksums..." || echo "Updating checksums..."
+		;;
+	generating_srcinfo)
+		[ "$LANGUAGE" = "pt" ] && echo "Gerando .SRCINFO..." || echo "Generating .SRCINFO..."
+		;;
+	running_namcap)
+		[ "$LANGUAGE" = "pt" ] && echo "Rodando namcap..." || echo "Running namcap..."
+		;;
+	update_done)
+		[ "$LANGUAGE" = "pt" ] && echo "Update concluído." || echo "Update completed."
+		;;
+	sync_files)
+		[ "$LANGUAGE" = "pt" ] && echo "Sincronizando arquivos..." || echo "Syncing files..."
+		;;
+	copy_done)
+		[ "$LANGUAGE" = "pt" ] && echo "Copy + Push concluído." || echo "Copy + Push completed."
+		;;
+	removing_warn1)
+		[ "$LANGUAGE" = "pt" ] && echo "Você está prestes a REMOVER o pacote:" || echo "You are about to REMOVE the package:"
+		;;
+	removing_warn2)
+		[ "$LANGUAGE" = "pt" ] && echo "Esta ação é irreversível." || echo "This action is irreversible."
+		;;
+	confirm_again)
+		[ "$LANGUAGE" = "pt" ] && echo "Digite o nome do pacote novamente para confirmar:" || echo "Type the package name again to confirm:"
+		;;
+	cancelled)
+		[ "$LANGUAGE" = "pt" ] && echo "Operação cancelada." || echo "Operation cancelled."
+		;;
+	remove_done)
+		[ "$LANGUAGE" = "pt" ] && echo "Se não houve erro, o pacote foi removido." || echo "If no errors occurred, the package was removed."
+		;;
+	esac
 }
 
-msg()  { echo -e "${GREEN}==>${RESET} $(t "$1")"; }
+msg() { echo -e "${GREEN}==>${RESET} $(t "$1")"; }
 warn() { echo -e "${YELLOW}==> WARNING:${RESET} $(t "$1")"; }
-err()  { echo -e "${RED}==> ERROR:${RESET} $(t "$1")"; exit 1; }
+err() {
+	echo -e "${RED}==> ERROR:${RESET} $(t "$1")"
+	exit 1
+}
 
 ############################################
 # VARIABLES
@@ -113,8 +116,8 @@ src/
 
 show_help() {
 
-if [ "$LANGUAGE" = "pt" ]; then
-cat <<EOF
+	if [ "$LANGUAGE" = "pt" ]; then
+		cat <<EOF
 $CMD v$VERSION
 
 Helper profissional para Maintainers do AUR.
@@ -136,8 +139,8 @@ EXEMPLOS:
   $CMD -cp ~/github/pkg ~/aur/pkg
   $CMD remove meu-pacote
 EOF
-else
-cat <<EOF
+	else
+		cat <<EOF
 $CMD v$VERSION
 
 Professional AUR Maintainer helper.
@@ -159,7 +162,7 @@ EXAMPLES:
   $CMD -cp ~/projects/pkg ~/aur/pkg
   $CMD remove my-package
 EOF
-fi
+	fi
 }
 
 ############################################
@@ -167,10 +170,10 @@ fi
 ############################################
 
 check_connection() {
-    msg checking_connection
-    if ! ssh -T "$AUR_HOST" 2>&1 | grep -q "Welcome to AUR"; then
-        err no_connection
-    fi
+	msg checking_connection
+	if ! ssh -T "$AUR_HOST" 2>&1 | grep -q "Welcome to AUR"; then
+		err no_connection
+	fi
 }
 
 ############################################
@@ -178,34 +181,39 @@ check_connection() {
 ############################################
 
 ensure_gitignore() {
-    if [ ! -f ".gitignore" ]; then
-        msg creating_gitignore
-        echo "$DEFAULT_GITIGNORE" > .gitignore
-    fi
+	if [ ! -f ".gitignore" ]; then
+		msg creating_gitignore
+		echo "$DEFAULT_GITIGNORE" >.gitignore
+	fi
 }
 ############################################
 # MASTER
 ############################################
 
 ensure_master_branch() {
-    # Se não for repositório git, sair
-    git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
+	# Se não for repositório git, sair
+	git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
 
-    # Se branch atual for main, converter para master
-    current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+	# Se branch atual for main, converter para master
+	current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
 
-    if [[ "$current_branch" == "main" ]]; then
-    msg no_master
+	if [[ "$current_branch" == "main" ]]; then
+		msg no_master
 
-        # Renomeia localmente
-        git branch -m main master
+		# Renomeia branch local
+		git branch -m main master
 
-        # Ajusta upstream se remoto existir
-        if git ls-remote --exit-code origin >/dev/null 2>&1; then
-            git fetch origin master >/dev/null 2>&1
-            git branch --set-upstream-to=origin/master master 2>/dev/null
-        fi
-    fi
+		# Remove upstream antigo
+		git branch --unset-upstream 2>/dev/null
+
+		# Atualiza referências do remoto
+		git fetch origin >/dev/null 2>&1
+
+		# Define novo upstream corretamente
+		if git ls-remote --exit-code --heads origin master >/dev/null 2>&1; then
+			git branch --set-upstream-to=origin/master master >/dev/null 2>&1
+		fi
+	fi
 }
 
 ############################################
@@ -213,14 +221,14 @@ ensure_master_branch() {
 ############################################
 
 clone_repo() {
-    PKG="$1"
-    [ -z "$PKG" ] && show_help && exit 0
-    check_connection
-    git clone "$AUR_URL/$PKG.git"
-    cd "$PKG"
+	PKG="$1"
+	[ -z "$PKG" ] && show_help && exit 0
+	check_connection
+	git clone "$AUR_URL/$PKG.git"
+	cd "$PKG"
 	ensure_master_branch
-    ensure_gitignore
-    msg repo_ready
+	ensure_gitignore
+	msg repo_ready
 }
 
 ############################################
@@ -229,37 +237,37 @@ clone_repo() {
 
 update_repo() {
 	ensure_master_branch
-    check_connection
-    ensure_gitignore
+	check_connection
+	ensure_gitignore
 
-    if [ "$FORCE_PGP" = true ] && grep -q "validpgpkeys" PKGBUILD; then
-        KEYS=$(grep -oE '[A-F0-9]{8,40}' PKGBUILD || true)
-        for key in $KEYS; do
-            gpg --recv-keys "$key" || true
-        done
-    fi
+	if [ "$FORCE_PGP" = true ] && grep -q "validpgpkeys" PKGBUILD; then
+		KEYS=$(grep -oE '[A-F0-9]{8,40}' PKGBUILD || true)
+		for key in $KEYS; do
+			gpg --recv-keys "$key" || true
+		done
+	fi
 
-    msg updating_checksums
-    updpkgsums 2>/dev/null || true
+	msg updating_checksums
+	updpkgsums 2>/dev/null || true
 
-    msg generating_srcinfo
-    makepkg --printsrcinfo > .SRCINFO
+	msg generating_srcinfo
+	makepkg --printsrcinfo >.SRCINFO
 
-if command -v namcap >/dev/null 2>&1; then
-    msg running_namcap
-    namcap PKGBUILD || true
-fi
+	if command -v namcap >/dev/null 2>&1; then
+		msg running_namcap
+		namcap PKGBUILD || true
+	fi
 
-    PKGVER=$(grep '^pkgver=' PKGBUILD | cut -d= -f2)
-    PKGREL=$(grep '^pkgrel=' PKGBUILD | cut -d= -f2)
+	PKGVER=$(grep '^pkgver=' PKGBUILD | cut -d= -f2)
+	PKGREL=$(grep '^pkgrel=' PKGBUILD | cut -d= -f2)
 
-    git add PKGBUILD .SRCINFO .gitignore
-    git commit -m "upgpkg: ${PKGVER}-${PKGREL}" || true
+	git add PKGBUILD .SRCINFO .gitignore
+	git commit -m "upgpkg: ${PKGVER}-${PKGREL}" || true
 
-    git pull --rebase
-    git push
+	git pull --rebase
+	git push
 
-    msg update_done
+	msg update_done
 }
 
 ############################################
@@ -267,25 +275,25 @@ fi
 ############################################
 
 copy_push() {
-    SRC="$1"
-    DEST="$2"
+	SRC="$1"
+	DEST="$2"
 
-    [ -z "$SRC" ] || [ -z "$DEST" ] && show_help && exit 1
+	[ -z "$SRC" ] || [ -z "$DEST" ] && show_help && exit 1
 
-    check_connection
-    msg sync_files
+	check_connection
+	msg sync_files
 
-    rsync -av --delete \
-        --exclude='.git' \
-        --exclude='pkg' \
-        --exclude='src' \
-        "$SRC/" "$DEST/"
+	rsync -av --delete \
+		--exclude='.git' \
+		--exclude='pkg' \
+		--exclude='src' \
+		"$SRC/" "$DEST/"
 
-    cd "$DEST"
-    update_repo
-    cd "$ORIGINAL_DIR"
+	cd "$DEST"
+	update_repo
+	cd "$ORIGINAL_DIR"
 
-    msg copy_done
+	msg copy_done
 }
 
 ############################################
@@ -293,7 +301,7 @@ copy_push() {
 ############################################
 
 build_pkg() {
-    makepkg -si --clean --cleanbuild
+	makepkg -si --clean --cleanbuild
 }
 
 ############################################
@@ -301,26 +309,26 @@ build_pkg() {
 ############################################
 
 remove_package() {
-    PKG="$1"
-    [ -z "$PKG" ] && show_help && exit 1
+	PKG="$1"
+	[ -z "$PKG" ] && show_help && exit 1
 
-    check_connection
+	check_connection
 
-    echo ""
-    warn removing_warn1
-    echo "$PKG"
-    warn removing_warn2
-    echo ""
+	echo ""
+	warn removing_warn1
+	echo "$PKG"
+	warn removing_warn2
+	echo ""
 
-    read -rp "$(t confirm_again) " CONFIRM
+	read -rp "$(t confirm_again) " CONFIRM
 
-    if [ "$CONFIRM" != "$PKG" ]; then
-        msg cancelled
-        exit 0
-    fi
+	if [ "$CONFIRM" != "$PKG" ]; then
+		msg cancelled
+		exit 0
+	fi
 
-    ssh aur@aur.archlinux.org remove "$PKG"
-    msg remove_done
+	ssh aur@aur.archlinux.org remove "$PKG"
+	msg remove_done
 }
 
 ############################################
@@ -328,37 +336,37 @@ remove_package() {
 ############################################
 
 case "$1" in
-    -h|--help)
-        show_help
-        ;;
-    -v|--version)
-        echo "$CMD v$VERSION"
-        ;;
-    update|-u)
-        update_repo
-        ;;
-    --force-pgp)
-        FORCE_PGP=true
-        update_repo
-        ;;
-    -cp)
-        shift
-        copy_push "$1" "$2"
-        ;;
-    build)
-        build_pkg
-        ;;
-    setup)
-        setup_aur
-        ;;
-    remove)
-        shift
-        remove_package "$1"
-        ;;
-    "")
-        show_help
-        ;;
-    *)
-        clone_repo "$1"
-        ;;
+-h | --help)
+	show_help
+	;;
+-v | --version)
+	echo "$CMD v$VERSION"
+	;;
+update | -u)
+	update_repo
+	;;
+--force-pgp)
+	FORCE_PGP=true
+	update_repo
+	;;
+-cp)
+	shift
+	copy_push "$1" "$2"
+	;;
+build)
+	build_pkg
+	;;
+setup)
+	setup_aur
+	;;
+remove)
+	shift
+	remove_package "$1"
+	;;
+"")
+	show_help
+	;;
+*)
+	clone_repo "$1"
+	;;
 esac

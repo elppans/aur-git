@@ -196,6 +196,7 @@ ensure_master_branch() {
 
 	# Se branch atual for main, converter para master
 	current_branch=$(git symbolic-ref --short HEAD 2>/dev/null)
+	export current_branch
 
 	if [[ "$current_branch" == "main" ]]; then
 		msg no_master
@@ -267,7 +268,7 @@ update_repo() {
 	git commit -m "upgpkg: ${PKGVER}-${PKGREL}" || true
 
 	git pull --rebase
-	git push
+	git push -u origin "$current_branch"
 
 	msg update_done
 }

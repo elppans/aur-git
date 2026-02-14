@@ -1,0 +1,333 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2029
+
+# aur-git - Professional AUR maintainer helper
+# Copyright (c) 2026 Elppans
+# Licensed under the MIT License.
+# See LICENSE file for details.
+
+VERSION="1.0.0"
+CMD="$(basename "$0")"
+
+set -e
+
+############################################
+# LANGUAGE DETECTION
+############################################
+
+LANG_SYS="${LANG:-en_US}"
+
+if [[ "$LANG_SYS" == pt* ]]; then
+    LANGUAGE="pt"
+else
+    LANGUAGE="en"
+fi
+
+############################################
+# COLORS
+############################################
+
+GREEN="\e[32m"
+YELLOW="\e[33m"
+RED="\e[31m"
+RESET="\e[0m"
+
+############################################
+# TEXT FUNCTION
+############################################
+
+t() {
+    case "$1" in
+        checking_connection)
+            [ "$LANGUAGE" = "pt" ] && echo "Verificando conexão com AUR..." || echo "Checking AUR connection..."
+            ;;
+        no_connection)
+            [ "$LANGUAGE" = "pt" ] && echo "Sem conexão ou autenticação com AUR." || echo "No connection or authentication with AUR."
+            ;;
+        creating_gitignore)
+            [ "$LANGUAGE" = "pt" ] && echo "Criando .gitignore padrão..." || echo "Creating default .gitignore..."
+            ;;
+        repo_ready)
+            [ "$LANGUAGE" = "pt" ] && echo "Repositório pronto." || echo "Repository ready."
+            ;;
+        updating_checksums)
+            [ "$LANGUAGE" = "pt" ] && echo "Atualizando checksums..." || echo "Updating checksums..."
+            ;;
+        generating_srcinfo)
+            [ "$LANGUAGE" = "pt" ] && echo "Gerando .SRCINFO..." || echo "Generating .SRCINFO..."
+            ;;
+        running_namcap)
+            [ "$LANGUAGE" = "pt" ] && echo "Rodando namcap..." || echo "Running namcap..."
+            ;;
+        update_done)
+            [ "$LANGUAGE" = "pt" ] && echo "Update concluído." || echo "Update completed."
+            ;;
+        sync_files)
+            [ "$LANGUAGE" = "pt" ] && echo "Sincronizando arquivos..." || echo "Syncing files..."
+            ;;
+        copy_done)
+            [ "$LANGUAGE" = "pt" ] && echo "Copy + Push concluído." || echo "Copy + Push completed."
+            ;;
+        removing_warn1)
+            [ "$LANGUAGE" = "pt" ] && echo "Você está prestes a REMOVER o pacote:" || echo "You are about to REMOVE the package:"
+            ;;
+        removing_warn2)
+            [ "$LANGUAGE" = "pt" ] && echo "Esta ação é irreversível." || echo "This action is irreversible."
+            ;;
+        confirm_again)
+            [ "$LANGUAGE" = "pt" ] && echo "Digite o nome do pacote novamente para confirmar:" || echo "Type the package name again to confirm:"
+            ;;
+        cancelled)
+            [ "$LANGUAGE" = "pt" ] && echo "Operação cancelada." || echo "Operation cancelled."
+            ;;
+        remove_done)
+            [ "$LANGUAGE" = "pt" ] && echo "Se não houve erro, o pacote foi removido." || echo "If no errors occurred, the package was removed."
+            ;;
+    esac
+}
+
+msg()  { echo -e "${GREEN}==>${RESET} $(t "$1")"; }
+warn() { echo -e "${YELLOW}==> WARNING:${RESET} $(t "$1")"; }
+err()  { echo -e "${RED}==> ERROR:${RESET} $(t "$1")"; exit 1; }
+
+############################################
+# VARIABLES
+############################################
+
+AUR_HOST="aur@aur.archlinux.org"
+AUR_URL="ssh://aur@aur.archlinux.org"
+ORIGINAL_DIR="$(pwd)"
+FORCE_PGP=false
+
+DEFAULT_GITIGNORE="pkg/
+src/
+*pkg.tar.xz
+*pkg.tar.zst"
+
+############################################
+# HELP
+############################################
+
+show_help() {
+
+if [ "$LANGUAGE" = "pt" ]; then
+cat <<EOF
+$CMD v$VERSION
+
+Helper profissional para maintainers do AUR.
+
+USO:
+  $CMD <pacote>               Clona pacote do AUR
+  $CMD -u | update            Atualiza pacote atual
+  $CMD --force-pgp            Atualiza importando chaves PGP
+  $CMD -cp <orig> <dest>      Sincroniza GitHub → AUR
+  $CMD build                  Compila localmente
+  $CMD setup                  Configura SSH automaticamente
+  $CMD remove <pacote>        Remove pacote do AUR
+  $CMD -h | --help            Mostra ajuda
+  $CMD -v | --version         Mostra versão
+
+EXEMPLOS:
+  $CMD meu-pacote
+  cd meu-pacote && $CMD -u
+  $CMD -cp ~/github/pkg ~/aur/pkg
+  $CMD remove meu-pacote
+EOF
+else
+cat <<EOF
+$CMD v$VERSION
+
+Professional AUR maintainer helper.
+
+USAGE:
+  $CMD <package>              Clone AUR package
+  $CMD -u | update            Update current package
+  $CMD --force-pgp            Update importing PGP keys
+  $CMD -cp <src> <dest>       Sync GitHub → AUR
+  $CMD build                  Build locally
+  $CMD setup                  Configure SSH automatically
+  $CMD remove <package>       Remove package from AUR
+  $CMD -h | --help            Show help
+  $CMD -v | --version         Show version
+
+EXAMPLES:
+  $CMD my-package
+  cd my-package && $CMD -u
+  $CMD -cp ~/projects/pkg ~/aur/pkg
+  $CMD remove my-package
+EOF
+fi
+}
+
+############################################
+# CONNECTION CHECK
+############################################
+
+check_connection() {
+    msg checking_connection
+    if ! ssh -T "$AUR_HOST" 2>&1 | grep -q "Welcome to AUR"; then
+        err no_connection
+    fi
+}
+
+############################################
+# GITIGNORE
+############################################
+
+ensure_gitignore() {
+    if [ ! -f ".gitignore" ]; then
+        msg creating_gitignore
+        echo "$DEFAULT_GITIGNORE" > .gitignore
+    fi
+}
+
+############################################
+# CLONE
+############################################
+
+clone_repo() {
+    PKG="$1"
+    [ -z "$PKG" ] && show_help && exit 0
+    check_connection
+    git clone "$AUR_URL/$PKG.git"
+    cd "$PKG"
+    ensure_gitignore
+    msg repo_ready
+}
+
+############################################
+# UPDATE
+############################################
+
+update_repo() {
+    check_connection
+    ensure_gitignore
+
+    if [ "$FORCE_PGP" = true ] && grep -q "validpgpkeys" PKGBUILD; then
+        KEYS=$(grep -oE '[A-F0-9]{8,40}' PKGBUILD || true)
+        for key in $KEYS; do
+            gpg --recv-keys "$key" || true
+        done
+    fi
+
+    msg updating_checksums
+    updpkgsums 2>/dev/null || true
+
+    msg generating_srcinfo
+    makepkg --printsrcinfo > .SRCINFO
+
+    msg running_namcap
+    namcap PKGBUILD || true
+
+    PKGVER=$(grep '^pkgver=' PKGBUILD | cut -d= -f2)
+    PKGREL=$(grep '^pkgrel=' PKGBUILD | cut -d= -f2)
+
+    git add PKGBUILD .SRCINFO .gitignore
+    git commit -m "upgpkg: ${PKGVER}-${PKGREL}" || true
+
+    git pull --rebase
+    git push
+
+    msg update_done
+}
+
+############################################
+# COPY PUSH
+############################################
+
+copy_push() {
+    SRC="$1"
+    DEST="$2"
+
+    [ -z "$SRC" ] || [ -z "$DEST" ] && show_help && exit 1
+
+    check_connection
+    msg sync_files
+
+    rsync -av --delete \
+        --exclude='.git' \
+        --exclude='pkg' \
+        --exclude='src' \
+        "$SRC/" "$DEST/"
+
+    cd "$DEST"
+    update_repo
+    cd "$ORIGINAL_DIR"
+
+    msg copy_done
+}
+
+############################################
+# BUILD
+############################################
+
+build_pkg() {
+    makepkg -si --cleanbuild
+}
+
+############################################
+# REMOVE
+############################################
+
+remove_package() {
+    PKG="$1"
+    [ -z "$PKG" ] && show_help && exit 1
+
+    check_connection
+
+    echo ""
+    warn removing_warn1
+    echo "$PKG"
+    warn removing_warn2
+    echo ""
+
+    read -rp "$(t confirm_again) " CONFIRM
+
+    if [ "$CONFIRM" != "$PKG" ]; then
+        msg cancelled
+        exit 0
+    fi
+
+    ssh aur@aur.archlinux.org remove "$PKG"
+    msg remove_done
+}
+
+############################################
+# MAIN
+############################################
+
+case "$1" in
+    -h|--help)
+        show_help
+        ;;
+    -v|--version)
+        echo "$CMD v$VERSION"
+        ;;
+    update|-u)
+        update_repo
+        ;;
+    --force-pgp)
+        FORCE_PGP=true
+        update_repo
+        ;;
+    -cp)
+        shift
+        copy_push "$1" "$2"
+        ;;
+    build)
+        build_pkg
+        ;;
+    setup)
+        setup_aur
+        ;;
+    remove)
+        shift
+        remove_package "$1"
+        ;;
+    "")
+        show_help
+        ;;
+    *)
+        clone_repo "$1"
+        ;;
+esac

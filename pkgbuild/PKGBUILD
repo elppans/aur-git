@@ -22,7 +22,7 @@ optdepends=(
 )
 provides=('aur-git')
 conflicts=('aur-git')
-pkgdesc="List optional dependencies (optdepends) of pacman packages and groups"
+pkgdesc="Professional AUR maintainer helper with automation and GitHub sync"
 url="https://github.com/elppans/${pkgname}"
 source=("git+${url}.git#branch=main")
 sha256sums=('SKIP')
